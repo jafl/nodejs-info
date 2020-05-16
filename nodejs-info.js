@@ -75,13 +75,13 @@ const template = `<!doctype html>
         <tr><td>{{@key}}</td><td>{{this}}</td></tr>
         {{/each}}
 
-        {{#if process.env.NODE_ENV}}
+        {{#if env.NODE_ENV}}
         <tr><td colspan="2">&nbsp;</td></tr>
         <tr><td>NODE_ENV</td><td>{{process.env.NODE_ENV}}</td></tr>
         {{/if}}
 
         <tr><td colspan="2"><h2>Environment</h2></td></tr>
-        {{#each process.env}}
+        {{#each env}}
         <tr><td>{{@key}}</td><td>{{this}}</td></tr>
         {{/each}}
 
@@ -120,10 +120,11 @@ const template = `<!doctype html>
  * @param   {Object} req - Node request object.
  * @param   {Object} [options]
  * @param   {string} [options.style] - Optional CSS which can be used to style output.
+ * @param   {string} [options.obfuscate] - Optional function with which to obfuscate environment variables.
  * @returns {string} HTML page with configuration information.
  */
 function nodeinfo(req, options) {
-    const defaults = { style: '' };
+    const defaults = { style: '', obfuscate: (k,s) => s };
     const opt = Object.assign(defaults, options);
 
     const context = {};
@@ -182,6 +183,12 @@ function nodeinfo(req, options) {
         // cookies go in separate nested table
         context.request.cookies = req.headers.cookie ? cookie.parse(req.headers.cookie) : {};
         delete context.request.headers.cookie;
+    }
+
+    context.env = {};
+    for (let k in process.env)
+    {
+        context.env[k] = opt.obfuscate(k, process.env[k]);
     }
 
     const templateFn = handlebars.compile(template);

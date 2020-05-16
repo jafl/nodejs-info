@@ -4,7 +4,7 @@ NodeInfo
 Outputs information about Node.js configuration, somewhat comparably to PHP’s `phpinfo()`.
 
 Includes information about the npm package, operating system, process memory, versions of Node and 
-Node components, the request, and the headers.
+Node components, the environment, the request, and the headers.
 
 The `nodeinfo()` function returns an HTML page as a string, which can be rendered through any tool:
 Connect, Express, Koa, etc.
@@ -50,6 +50,10 @@ Example usage (Koa)
 CSS styling can be provided via the optional `style` parameter.
 
     const html = nodeinfo(req, { style: 'table { background-color: #cccccc }' }); 
+
+Environment variable obfuscation can be done via the optional `obfuscate` parameter.
+
+    const html = nodeinfo(req, { obfuscate: (k,s) => /secret|password/i.test(k) ? '********' : s }); 
 
 ![Screenshot](nodejs-info.png)
 
