@@ -80,6 +80,11 @@ const template = `<!doctype html>
         <tr><td>NODE_ENV</td><td>{{process.env.NODE_ENV}}</td></tr>
         {{/if}}
 
+        <tr><td colspan="2"><h2>Environment</h2></td></tr>
+        {{#each process.env}}
+        <tr><td>{{@key}}</td><td>{{this}}</td></tr>
+        {{/each}}
+
         {{#if request}}
         <tr><td colspan="2"><h2>Request</h2></td></tr>
         <tr><td>method</td><td>{{request.method}}</td></tr>
